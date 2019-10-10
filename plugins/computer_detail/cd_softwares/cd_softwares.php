@@ -80,9 +80,10 @@ if (isset($_SESSION['OCS']['USE_NEW_SOFT_TABLES'])
 								WHERE (hardware_id=$systemid)";
     $list_fields[$l->g(49)] = 's_name.NAME';
 } else {
-    $queryDetails = "SELECT *, c.CATEGORY_NAME as CATEGORY FROM softwares s
-                 left join software_categories c on c.id=s.category
-								 WHERE (hardware_id=$systemid)";
+    $queryDetails = "SELECT s.*, c.CATEGORY_NAME as CATEGORY, h.osname, h.osversion FROM softwares s
+                     LEFT JOIN software_categories c on c.id=s.category
+                     LEFT JOIN hardware h on h.id = s.hardware_id
+                     WHERE (hardware_id=$systemid)";
     $list_fields[$l->g(49)] = 'NAME';
 }
 
@@ -92,6 +93,7 @@ if($protectedPost['onglet_soft'] != 0){
 
 $list_fields[$l->g(277)] = 'VERSION';
 $list_fields[$l->g(51)] = 'COMMENTS';
+
 if ($show_all_column) {
     $list_col_cant_del = $list_fields;
 } else {
@@ -99,15 +101,17 @@ if ($show_all_column) {
 }
 
 $default_fields = $list_fields;
+
 $list_fields[$l->g(1248)] = 'FOLDER';
 $list_fields[$l->g(446)] = 'FILENAME';
 $list_fields[ucfirst(strtolower($l->g(953)))] = 'FILESIZE';
-
 $list_fields['GUID'] = 'GUID';
 $list_fields[ucfirst(strtolower($l->g(1012)))] = 'LANGUAGE';
 $list_fields[$l->g(1238)] = 'INSTALLDATE';
 $list_fields[$l->g(1247)] = 'BITSWIDTH';
 $list_fields[$l->g(388)] = 'c.CATEGORY_NAME';
+$list_fields[$l->g(25)] = 'h.osname';
+$list_fields[$l->g(275)] = 'h.osversion';
 
 $tab_options['FILTRE'] = array_flip($list_fields);
 
